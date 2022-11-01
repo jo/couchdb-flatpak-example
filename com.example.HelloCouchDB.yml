@@ -6,6 +6,8 @@ command: hello-couchdb
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
   - org.freedesktop.Sdk.Extension.llvm14
+finish-args:
+  - --filesystem=/dev/urandom
 modules:
   - name: erlang
     buildsystem: simple
