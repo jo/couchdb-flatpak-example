@@ -45,5 +45,10 @@ Since the app keeps runing CouchDB in the background, you might want to kill it 
 flatpak kill com.example.HelloCouchDB
 ```
 
+## TODO
+* We should include a [cleanup](https://docs.flatpak.org/en/latest/manifests.html#cleanup) step to remove unneeded files from the bundle.
+* Spidermonkey and Erlang could maybe compiled with some optimisations?
+* Currently CouchDB logs to a file in the user data directory (`~/.var/app/<app-id>/data/couchdb.log`) - we should rotate this somehow or use syslog.
+
 
 (c) 2022 Johannes J. Schmidt
