@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function token {
-  cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
+  head -c 4096 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
 }
 
 function get_free_port {
@@ -9,7 +9,7 @@ function get_free_port {
 }
 
 
-echo Configuring CouchDB
+echo Configuring CouchDB...
 
 
 URL_CONFIG_FILENAME="$XDG_CONFIG_HOME/couchdb.url"
@@ -29,13 +29,13 @@ UUID="$(token)"
 SECRET="$(token)"
 
 
-echo Writing $URL_CONFIG_FILENAME...
+echo * creating $URL_CONFIG_FILENAME
 cat << EOF > $URL_CONFIG_FILENAME
 $URL
 EOF
 
 
-echo Writing $VM_ARGS_FILENAME...
+echo * creating $VM_ARGS_FILENAME
 cat << EOF > $VM_ARGS_FILENAME
 -name $NAME
 -setcookie $COOKIE
@@ -50,7 +50,7 @@ cat << EOF > $VM_ARGS_FILENAME
 EOF
 
 
-echo Writing $INI_FILENAME...
+echo * creating $INI_FILENAME
 cat << EOF > $INI_FILENAME
 [couchdb]
 uuid = $UUID
@@ -81,3 +81,6 @@ secret = $SECRET
 writer = file
 file = $XDG_DATA_HOME/couchdb.log
 EOF
+
+
+echo complete.
