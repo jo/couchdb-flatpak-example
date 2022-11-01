@@ -1,0 +1,64 @@
+app-id: com.example.HelloCouchDB
+runtime: org.freedesktop.Platform
+runtime-version: '22.08'
+sdk: org.freedesktop.Sdk
+command: hello-couchdb
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+  - org.freedesktop.Sdk.Extension.llvm14
+modules:
+  - name: erlang
+    buildsystem: simple
+    build-commands:
+      - ./configure --prefix=/app && make install
+    sources:
+      - type: archive
+        url: https://github.com/erlang/otp/releases/download/OTP-24.3.4.6/otp_src_24.3.4.6.tar.gz
+        sha256: 8444ff9abe23aea268adbb95463561fc222c965052d35d7c950b17be01c3ad82
+  - name: spidermonkey
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/llvm14/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm14/lib
+    build-commands:
+      - cp js/src/configure.in js/src/configure
+      - chmod +x js/src/configure
+      - mkdir js/src/_build
+      - source /usr/lib/sdk/rust-stable/enable.sh
+        && cd js/src/_build
+        && ../configure --prefix=/app --disable-jemalloc --with-system-zlib --with-intl-api --enable-optimize
+      - cd js/src/_build
+        && make
+      - cd js/src/_build
+        && make install
+    sources:
+      - type: archive
+        url: https://ftp.mozilla.org/pub/firefox/releases/91.0esr/source/firefox-91.0esr.source.tar.xz
+        sha256: fa1bae287ef55416ae4ee3fbd22f923f9d1fec066c91766d60633d53db6a9959
+  - name: couchdb
+    buildsystem: simple
+    build-commands:
+      - ./configure --disable-docs --disable-fauxton --spidermonkey-version 91
+        # patching rebar script because it seems to not accept ERL_LDFLAGS
+      - sed -i -e 's/opt\/homebrew\/lib/app\/lib/g' src/couch/rebar.config.script
+      - export PATH="/app/bin/erlang/bin/:$PATH"
+        && make release ERL_CFLAGS="-I/usr/include/c++/11.3.0 -I/usr/include/c++/11.3.0/x86_64-unknown-linux-gnu -I/app/lib/erlang/usr/include -I/app/include/mozjs-91" ERL_LDFLAGS="-L/app/lib/"
+      - cp -r rel/couchdb /app/
+    sources:
+      - type: archive
+        url: https://downloads.apache.org/couchdb/source/3.2.2/apache-couchdb-3.2.2.tar.gz
+        sha256: 69c9fd6f80133557f68a02e92dda72a4fd646d646f429f45bb8329a30f82f20e
+  - name: configure-couchdb
+    buildsystem: simple
+    build-commands:
+      - install -D configure-couchdb.sh /app/bin/configure-couchdb
+    sources:
+      - type: file
+        path: configure-couchdb.sh
+  - name: hello-couchdb
+    buildsystem: simple
+    build-commands:
+      - install -D hello-couchdb.sh /app/bin/hello-couchdb
+    sources:
+      - type: file
+        path: hello-couchdb.sh
