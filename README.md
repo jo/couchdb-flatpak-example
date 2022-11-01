@@ -1,5 +1,5 @@
 # CouchDB Flatpak Example
-Example application with CouchDB included and packaged with [Flatpak](https://flatpak.org/).
+Example [Flatpak](https://flatpak.org/) application with CouchDB included.
 
 
 The Flatpak comes with modules for
