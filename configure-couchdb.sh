@@ -9,7 +9,7 @@ function get_free_port {
 }
 
 
-echo Configuring CouchDB...
+echo Configuring CouchDB:
 
 
 URL_CONFIG_FILENAME="$XDG_CONFIG_HOME/couchdb.url"
@@ -81,6 +81,23 @@ secret = $SECRET
 writer = file
 file = $XDG_DATA_HOME/couchdb.log
 EOF
+
+
+echo -n "* starting CouchDB"
+
+COUCHDB_ARGS_FILE="$VM_ARGS_FILENAME" /app/couchdb/bin/couchdb &
+
+until $(curl --output /dev/null --silent --head --fail $URL/_up); do
+  echo -n '.'
+  sleep 0.1
+done
+echo "ok"
+
+echo -n * creating _users database...
+curl --silent -XPUT $URL/_users
+
+echo -n * creating _replicator database...
+curl --silent -XPUT $URL/_replicator
 
 
 echo complete.
