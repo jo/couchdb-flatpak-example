@@ -1,0 +1,18 @@
+on:
+  push:
+    branches: [main]
+  pull_request:
+name: CI
+jobs:
+  flatpak:
+    name: "Flatpak"
+    runs-on: ubuntu-latest
+    container:
+      image: bilelmoussaoui/flatpak-github-actions:gnome-40
+      options: --privileged
+    steps:
+    - uses: actions/checkout@v2
+    - uses: flatpak/flatpak-github-actions/flatpak-builder@v4
+      with:
+        bundle: hello-couchdb.flatpak
+        manifest-path: com.example.HelloCouchDB.yml
