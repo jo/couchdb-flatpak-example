@@ -8,6 +8,7 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.llvm14
 finish-args:
   - --filesystem=/dev/urandom
+  - --share=network
 modules:
   - name: erlang
     buildsystem: simple
@@ -50,13 +51,13 @@ modules:
       - type: archive
         url: https://downloads.apache.org/couchdb/source/3.2.2/apache-couchdb-3.2.2.tar.gz
         sha256: 69c9fd6f80133557f68a02e92dda72a4fd646d646f429f45bb8329a30f82f20e
-  - name: configure-couchdb
+  - name: setup-hello-couchdb
     buildsystem: simple
     build-commands:
-      - install -D configure-couchdb.sh /app/bin/configure-couchdb
+      - install -D setup-hello-couchdb.sh /app/bin/setup-hello-couchdb
     sources:
       - type: file
-        path: configure-couchdb.sh
+        path: setup-hello-couchdb.sh
   - name: hello-couchdb
     buildsystem: simple
     build-commands:

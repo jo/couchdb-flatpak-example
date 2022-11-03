@@ -1,18 +1,25 @@
 #!/bin/sh
 
+# generate a random token
 function token {
   head -c 4096 /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
 }
 
+# generate random uuid
+function uuid {
+  head -c 4096 /dev/urandom | tr -dc 'a-f0-9' | fold -w 32 | head -n 1
+}
+
+# ask the system for a free port
 function get_free_port {
   python -c 'import socket; s=socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()'
 }
 
 
-echo Configuring CouchDB:
+echo Setting up Hello CouchDB:
 
 
-URL_CONFIG_FILENAME="$XDG_CONFIG_HOME/couchdb.url"
+CONFIG_FILENAME="$XDG_CONFIG_HOME/hello-couchdb.ini"
 VM_ARGS_FILENAME="$XDG_CONFIG_HOME/vm.args"
 INI_FILENAME="$XDG_CONFIG_HOME/local.ini"
 
@@ -21,17 +28,25 @@ PORT=$(get_free_port)
 USERNAME="admin"
 PASSWORD="$(token)"
 
-URL="http://$USERNAME:$PASSWORD@$HOST:$PORT"
+URL="http://$HOST:$PORT"
+ADMIN_URL="http://$USERNAME:$PASSWORD@$HOST:$PORT"
 
-NAME="$(token)@$HOST"
+NAME="$(uuid)@$HOST"
 COOKIE="$(token)"
-UUID="$(token)"
+UUID="$(uuid)"
 SECRET="$(token)"
 
 
-echo * creating $URL_CONFIG_FILENAME
-cat << EOF > $URL_CONFIG_FILENAME
-$URL
+echo * creating $CONFIG_FILENAME
+cat << EOF > $CONFIG_FILENAME
+# This is the configuration for Hello CouchDB.
+# Created by $(basename $0) on $(date)
+
+[couchdb]
+# CouchDB server URL including port, eg http://localhost:5984
+url = $URL
+username = $USERNAME
+password = $PASSWORD
 EOF
 
 
@@ -94,10 +109,10 @@ done
 echo "ok"
 
 echo -n * creating _users database...
-curl --silent -XPUT $URL/_users
+curl --silent -XPUT $ADMIN_URL/_users
 
 echo -n * creating _replicator database...
-curl --silent -XPUT $URL/_replicator
+curl --silent -XPUT $ADMIN_URL/_replicator
 
 
 echo complete.

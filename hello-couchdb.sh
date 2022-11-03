@@ -1,27 +1,27 @@
 #!/bin/sh
 
-URL_CONFIG_FILENAME="$XDG_CONFIG_HOME/couchdb.url"
+CONFIG_FILENAME="$XDG_CONFIG_HOME/hello-couchdb.ini"
 
-if [ ! -f $URL_CONFIG_FILENAME ]; then
-  configure-couchdb
+# configure if needed
+if [ ! -f $CONFIG_FILENAME ]; then
+  setup-hello-couchdb
 fi
 
+# load configuration
+source <(grep = <(grep -A5 '\[couchdb\]' $CONFIG_FILENAME) | sed 's/ *= */=/g')
 
-COUCHDB_URL=$(cat $URL_CONFIG_FILENAME)
-
-status_code=$(curl --write-out %{http_code} --silent --output /dev/null $COUCHDB_URL/_up)
-
-if [[ "$status_code" -ne 200 ]] ; then
+# start if not running
+if [[ "$(curl --write-out %{http_code} --silent --output /dev/null $url/_up)" -ne 200 ]] ; then
   echo -n "Starting CouchDB"
   
   COUCHDB_ARGS_FILE="$XDG_CONFIG_HOME/vm.args" /app/couchdb/bin/couchdb &
 
-  until $(curl --output /dev/null --silent --head --fail $COUCHDB_URL/_up); do
+  until $(curl --output /dev/null --silent --head --fail $url/_up); do
     echo -n '.'
     sleep 0.1
   done
   echo "ok"
 fi
 
-curl --silent $COUCHDB_URL
-
+# use couch
+curl --silent $url
