@@ -40,7 +40,7 @@ modules:
       - mkdir js/src/_build
       - source /usr/lib/sdk/rust-stable/enable.sh
         && cd js/src/_build
-        && ../configure --prefix=/app --disable-jemalloc --with-system-zlib --with-intl-api --enable-optimize
+        && ../configure --prefix=/app --disable-jemalloc --with-system-zlib --without-intl-api --enable-optimize
       - cd js/src/_build
         && make
       - cd js/src/_build
@@ -53,10 +53,13 @@ modules:
     buildsystem: simple
     build-commands:
       - ./configure --disable-docs --disable-fauxton --spidermonkey-version 91
-        # patching rebar script because it seems to not accept ERL_LDFLAGS
-      - sed -i -e 's/opt\/homebrew\/lib/app\/lib/g' src/couch/rebar.config.script
+        # patching rebar config to use CFLAGS and LDFLAGS
+      - sed -i -e 's/{"DRV_LDFLAGS", "$DRV_LDFLAGS -lm -licuuc -licudata -licui18n -lpthread"}]./{"DRV_LDFLAGS", "$DRV_LDFLAGS -lm -licuuc -licudata -licui18n -lpthread"},{"LDFLAGS", "$LDFLAGS"},{"CFLAGS", "$CFLAGS"}]./' src/couch/rebar.config.script
       - export PATH="/app/bin/erlang/bin/:$PATH"
-        && make release ERL_CFLAGS="-I/usr/include/c++/11.3.0 -I/usr/include/c++/11.3.0/x86_64-unknown-linux-gnu -I/app/lib/erlang/usr/include -I/app/include/mozjs-91" ERL_LDFLAGS="-L/app/lib/"
+        && make release \
+          ERL_CFLAGS="-I/usr/include/c++/11.3.0 -I/usr/include/c++/11.3.0/x86_64-unknown-linux-gnu -I/app/lib/erlang/usr/include" \
+          CFLAGS="-I/app/include/mozjs-91 -I/app/include/unicode" \
+          LDFLAGS="-L/app/lib"
       - cp -r rel/couchdb /app/
     sources:
       - type: archive
