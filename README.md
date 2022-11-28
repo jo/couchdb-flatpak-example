@@ -1,6 +1,14 @@
 # CouchDB Flatpak Example
-Example [Flatpak](https://flatpak.org/) application with CouchDB included.
+Example [Flatpak](https://flatpak.org/) application with CouchDB included. 
 
+There can be multiple such applications each with their own couches on the same system, so on first start the couch
+
+* gets its own random free port
+* a uuid
+* a node name
+* an admin account
+
+and the configuration gets stored in an ini file in `XDG_CONFIG_HOME`.
 
 The Flatpak comes with modules for
 * ICU 71
