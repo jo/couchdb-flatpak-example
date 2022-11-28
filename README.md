@@ -3,6 +3,7 @@ Example [Flatpak](https://flatpak.org/) application with CouchDB included.
 
 
 The Flatpak comes with modules for
+* ICU 71
 * Erlang OTP 24
 * Spidermonkey 91
 * CouchDB 3.2.2
