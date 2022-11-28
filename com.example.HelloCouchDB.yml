@@ -10,6 +10,17 @@ finish-args:
   - --filesystem=/dev/urandom
   - --share=network
 modules:
+  - name: icu
+    buildsystem: simple
+    build-commands:
+      - cd source && chmod +x runConfigureICU configure install-sh
+      - cd source && ./configure --prefix=/app
+      - cd source && make
+      - cd source && make install
+    sources:
+      - type: archive
+        url: https://github.com/unicode-org/icu/releases/download/release-71-1/icu4c-71_1-src.tgz
+        sha256: 67a7e6e51f61faf1306b6935333e13b2c48abd8da6d2f46ce6adca24b1e21ebf
   - name: erlang
     buildsystem: simple
     build-commands:
