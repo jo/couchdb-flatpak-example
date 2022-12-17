@@ -12,9 +12,9 @@ and the configuration gets stored in an ini file in `XDG_CONFIG_HOME`.
 
 The Flatpak comes with modules for
 * ICU 71
-* Erlang OTP 24
+* Erlang OTP 25
 * Spidermonkey 91
-* CouchDB 3.2.2
+* CouchDB 3.3.0 RC1
 
 
 The app is a [little bash script](hello-couchdb.sh), which
