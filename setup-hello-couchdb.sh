@@ -91,10 +91,6 @@ port = $PORT
 same_site = strict
 allow_persistent_cookies = true
 secret = $SECRET
-
-[log]
-writer = file
-file = $XDG_DATA_HOME/couchdb.log
 EOF
 
 
