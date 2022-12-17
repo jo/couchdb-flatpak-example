@@ -52,7 +52,7 @@ modules:
   - name: couchdb
     buildsystem: simple
     build-commands:
-      - ./configure --disable-docs --disable-fauxton --spidermonkey-version 91
+      - ./configure --spidermonkey-version 91
         # patching rebar config to use CFLAGS and LDFLAGS
       - sed -i -e 's/{"DRV_LDFLAGS", "$DRV_LDFLAGS -lm -licuuc -licudata -licui18n -lpthread"}]./{"DRV_LDFLAGS", "$DRV_LDFLAGS -lm -licuuc -licudata -licui18n -lpthread"},{"LDFLAGS", "$LDFLAGS"},{"CFLAGS", "$CFLAGS"}]./' src/couch/rebar.config.script
       - export PATH="/app/bin/erlang/bin/:$PATH"
