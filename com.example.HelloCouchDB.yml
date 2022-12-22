@@ -53,11 +53,7 @@ modules:
     buildsystem: simple
     build-options:
       append-path: /app/bin/erlang/bin
-      build-args:
-         - --share=network
     build-commands:
-      # patch replication host completion
-      - sed -i -e 's/"httpd", "bind_address"/"chttpd", "bind_address"/' src/chttpd/src/chttpd.erl
       - ./configure --spidermonkey-version 91
       - make release \
           ERL_CFLAGS="-I/usr/include/c++/11.3.0 -I/usr/include/c++/11.3.0/x86_64-unknown-linux-gnu -I/app/lib/erlang/usr/include" \
@@ -66,8 +62,8 @@ modules:
       - cp -r rel/couchdb /app/
     sources:
       - type: archive
-        url: https://dist.apache.org/repos/dist/dev/couchdb/source/3.3.0/rc.1/apache-couchdb-3.3.0-RC1.tar.gz
-        sha256: ff4abb94dcae23b625d6dda286637c4ce8393cff6cef99e84e76d8ce6f035938
+        url: https://dist.apache.org/repos/dist/dev/couchdb/source/3.3.0/rc.2/apache-couchdb-3.3.0-RC2.tar.gz
+        sha256: e8c6bf3f99a8f0d2af5806652f57d53796367e2d4b24dedc86e268cf86f787a0
   - name: setup-hello-couchdb
     buildsystem: simple
     build-commands:
