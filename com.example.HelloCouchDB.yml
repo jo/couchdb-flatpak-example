@@ -27,8 +27,8 @@ modules:
       - ./configure --prefix=/app && make install
     sources:
       - type: archive
-        url: https://github.com/erlang/otp/releases/download/OTP-24.3.4.6/otp_src_24.3.4.6.tar.gz
-        sha256: 8444ff9abe23aea268adbb95463561fc222c965052d35d7c950b17be01c3ad82
+        url: https://github.com/erlang/otp/releases/download/OTP-25.2/otp_src_25.2.tar.gz
+        sha256: aee1ef294ee048c976d6a126a430367076354f484f557eacaf08bf086cb1314d
   - name: spidermonkey
     buildsystem: simple
     build-options:
@@ -51,20 +51,19 @@ modules:
         sha256: fa1bae287ef55416ae4ee3fbd22f923f9d1fec066c91766d60633d53db6a9959
   - name: couchdb
     buildsystem: simple
+    build-options:
+      append-path: /app/bin/erlang/bin
     build-commands:
       - ./configure --spidermonkey-version 91
-        # patching rebar config to use CFLAGS and LDFLAGS
-      - sed -i -e 's/{"DRV_LDFLAGS", "$DRV_LDFLAGS -lm -licuuc -licudata -licui18n -lpthread"}]./{"DRV_LDFLAGS", "$DRV_LDFLAGS -lm -licuuc -licudata -licui18n -lpthread"},{"LDFLAGS", "$LDFLAGS"},{"CFLAGS", "$CFLAGS"}]./' src/couch/rebar.config.script
-      - export PATH="/app/bin/erlang/bin/:$PATH"
-        && make release \
+      - make release \
           ERL_CFLAGS="-I/usr/include/c++/11.3.0 -I/usr/include/c++/11.3.0/x86_64-unknown-linux-gnu -I/app/lib/erlang/usr/include" \
           CFLAGS="-I/app/include/mozjs-91 -I/app/include/unicode" \
           LDFLAGS="-L/app/lib"
       - cp -r rel/couchdb /app/
     sources:
       - type: archive
-        url: https://downloads.apache.org/couchdb/source/3.2.2/apache-couchdb-3.2.2.tar.gz
-        sha256: 69c9fd6f80133557f68a02e92dda72a4fd646d646f429f45bb8329a30f82f20e
+        url: https://dist.apache.org/repos/dist/dev/couchdb/source/3.3.0/rc.2/apache-couchdb-3.3.0-RC2.tar.gz
+        sha256: e8c6bf3f99a8f0d2af5806652f57d53796367e2d4b24dedc86e268cf86f787a0
   - name: setup-hello-couchdb
     buildsystem: simple
     build-commands:
